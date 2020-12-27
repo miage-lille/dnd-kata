@@ -765,7 +765,7 @@ OCaml provides abstractions for:
   - functors are function from module to module
   - first-class modules are values and give a way to communicate between the type level and the module level. Exemple: a function from value to module.
 
-SOLID is not only a POO good pratice:
+SOLID is not only a OOP good pratice:
 
 - Single responsibility principle => module
 - Open/closed principle => module
