@@ -439,9 +439,9 @@ module Dwarf: PLAYABLE  = struct
 end
 ```
 
-#### Also are Elves, Half-orc, Tieflings, Tieflings
+#### Also are Elves, Half-orc, Halflings, Tieflings
 
-Dwarves are not the only race in Faerun. Each have a different constitution bonus. Half orcs have +1 while Elves, Tieflings and Tieflings don't have constitution bonus.
+Dwarves are not the only race in Faerun. Each have a different constitution bonus. Half orcs have +1 while Elves, Halflings and Tieflings don't have constitution bonus.
 
 When data varies inside a function we add a function parameter to avoid code duplication. We can do the same at module level. OCaml provides **functors** which are functional modules : function from module to module.
 
@@ -468,7 +468,7 @@ let bonus (x:int) : (module BONUS with type t = int) = (module struct
     let value = x
 end)
 
-(* we use our Race functo to create the five races *)
+(* we use our Race functor to create the five races *)
 module Dwarf = Race (val bonus 2)
 module Elf = Race (val bonus 0)
 module Tiefling = Race (val bonus 0)
@@ -557,7 +557,7 @@ module Dwarf = Race (val bonus Abilities.{
   })
 ```
 
-To be more conscice and explicit we can work from a `no_bonus` value:
+To be more concise and explicit we can work from a `no_bonus` value:
 
 ```ocaml
 let no_bonus = Abilities.{
@@ -575,7 +575,7 @@ module Dwarf = Race (val bonus Abilities.{
 module Elf = Race (val bonus Abilities.{
     no_bonus with dexterity = 2
   })
-module Halfing = Race (val bonus Abilities.{
+module Halfling = Race (val bonus Abilities.{
     no_bonus with dexterity = 2
   })
 module Tiefling = Race (val bonus Abilities.{
@@ -668,7 +668,7 @@ module Dwarf = Race (val bonus Abilities.{
 module Elf = Race (val bonus Abilities.{
     no_bonus with dexterity = 2
   })
-module Halfing = Race (val bonus Abilities.{
+module Halfling = Race (val bonus Abilities.{
     no_bonus with dexterity = 2
   })
 module Tiefling = Race (val bonus Abilities.{
