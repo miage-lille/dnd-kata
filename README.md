@@ -341,7 +341,7 @@ let gimly = Dwarf.of_string "Gimly"
 let () = Dwarf.to_string gimply |> print_endline
 ```
 
-### Horoes have abilities
+### Heroes have abilities
 
 In DnD, a Hero is also represented by its abilities.
 There is several option rules for abilities at the creation, we will only implement the _Standard scores_ one. At the beginning each ability have a value of 10:
@@ -712,10 +712,10 @@ What if we create the companions:
 ❌ let companions = [catti; regis; bruenor; wulfgar;  drizzt]
 ```
 
-**Error: This expression has type Halfing.t but an expression was expected of type
+**Error: This expression has type Halfling.t but an expression was expected of type
 Human.t**
 
-Remember the type of `list` has type `type 'a t = 'a list` , inference engine set`'a = Human.t` because it's the type of he first element of our list `catti`, but `regis` type is `Halfing.t`.
+Remember the type of `list` has type `type 'a t = 'a list` , inference engine set`'a = Human.t` because it's the type of he first element of our list `catti`, but `regis` type is `Halfling.t`.
 
 How could we help the compiler ? Type parameters must be concrete types.
 
