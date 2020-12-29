@@ -338,7 +338,7 @@ From the hero module (main module in hero.ml file), we cannot access a concrete 
 
 ```ocaml
 let gimly = Dwarf.of_string "Gimly"
-let () = Dwarf.to_string gimply |> print_endline
+let () = Dwarf.to_string gimly |> print_endline
 ```
 
 ### Heroes have abilities
