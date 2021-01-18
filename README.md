@@ -216,13 +216,13 @@ While programming we often use abstractions to have:
 - protocoles
 - default value or implementations
 
-We will explore how to do this by implementing a simplified character creator for Dunjon & Dragons
+We will explore how to do this by implementing a simplified character creator for Dungeons & Dragons
 
 First create a file `./lib/hero.ml`: it will be first place for our work
 
 ### About DnD
 
-Dunjon & Dragons a.k.a DnD is a role playing game where players play heroes in a fantasy setup.
+Dungeons & Dragons a.k.a DnD is a role playing game where players play heroes in a fantasy setup.
 The main setup for this game is Faerûn, a continent of the Abeir-Toril planet.
 We will use the [Dungeons & Dragons 5th Edition System](./doc/SRD-OGL_V5.1.pdf) under the Open-Gaming License (OGL).
 
@@ -344,7 +344,7 @@ let () = Dwarf.to_string gimly |> print_endline
 ### Heroes have abilities
 
 In DnD, a Hero is also represented by its abilities.
-There is several option rules for abilities at the creation, we will only implement the _Standard scores_ one. At the beginning each ability have a value of 10:
+There are several option rules for abilities at the creation, we will only implement the _Standard scores_ one. At the beginning each ability have a value of 10:
 
 ```ocaml
 module Abilities = struct
