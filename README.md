@@ -1,7 +1,7 @@
 # DnD Kata
 
 This Kata aims to model a DnD 5th Edition Charater, with its attributes.
-It will introduce somes S.O.L.I.D pratices appyed to OCaml
+It will introduce somes S.O.L.I.D pratices applyed to OCaml
 
 ## Setup a project from scratch
 
@@ -20,10 +20,10 @@ Since we will not publish our package to [opam repository](http://opam.ocaml.org
 
 [Dune](https://dune.build/) is a composable build system for OCaml projects _(and ReasonML and Coq)_. A project is a source tree, maybe containing one or more packages: a typical dune project will have a `dune-project` and one or more `<package>.opam`
 
-So create the `dune-project` and `lang` and `name` :
+So create the [dune-project](https://dune.readthedocs.io/en/stable/dune-files.html#dune-project) file with the `lang` and `name` stanzas :
 
 ```sh
-echo '(lang dune 2.7.1)\n (name dnd-kata)' >> dune-project
+echo '(lang dune 2.9)\n (name dnd-kata)' >> dune-project
 ```
 
 You notice that `dune-project` is a manifest that use s-expression format.
@@ -33,7 +33,7 @@ It contains the version of Dune we will use and the name of the project.
 > this s-expression
 >
 > ```
-> (lang dune 2.7.1)
+> (lang dune 2.9)
 > (name dnd-kata)
 > ```
 >
@@ -41,12 +41,12 @@ It contains the version of Dune we will use and the name of the project.
 >
 > ```
 > {
->  "lang" : {"dune" :  "2.7.1"},
+>  "lang" : {"dune" :  "2.9"},
 >  "name" : "dnd-kata"
 > }
 > ```
 
-Each folder and subfolder to include in our package need also a `dune` file manifest. That the case of the root file, so create it:
+Each folder and subfolder to include in our package need also a [dune](https://dune.readthedocs.io/en/stable/dune-files.html#dune) file manifest. That the case of the root file, so create it:
 
 ```sh
 echo '(dirs (:standard \ node_modules \ _esy))' >> dune
@@ -65,6 +65,8 @@ The `dirs` stanza allows specifying the sub-directories dune will include in a b
 - Use of dependencies coming from many repositories : opam, npm, esy, git, local, ...
 - A unique manifest to manage all the dune files
 
+> If you don't already have esy installed, run `npm i -g esy`
+
 First create the manifest :
 
 ```sh
@@ -75,39 +77,41 @@ and edit it
 
 ```json
 {
-  "name": "dnd-kata",
-  "version": "0.0.1",
-  "description": "New OCaml project",
-  "license": "MPL-2.0",
-  "scripts": {
-    "start": "esy x dnd"
-  },
-  "dependencies": {
-    "ocaml": "~4.10",
-    "@pesy/esy-pesy": "0.1.0-alpha.11",
-    "@opam/dune": "2.7.1"
-  },
-  "devDependencies": {},
-  "esy": {
-    "build": "dune build -p #{self.name}",
-    "buildDev": "pesy build",
-    "release": { "releasedBinaries": ["dnd"] }
-  }
+    "name": "dnd-kata",
+    "version": "0.0.1",
+    "description": "New OCaml project",
+    "license": "MPL-2.0",
+    "scripts": {
+        "start": "esy x dnd"
+    },
+    "dependencies": {
+        "ocaml": ">=4.12",
+        "@opam/dune": "*"
+    },
+    "devDependencies": {},
+    "esy": {
+        "build": "dune build -p #{self.name}",
+        "release": {
+            "releasedBinaries": [
+                "dnd"
+            ]
+        }
+    }
 }
 ```
 
 > Most of the npm `package.json` fields are recongnized by esy : https://docs.npmjs.com/cli/v6/configuring-npm/package-json
 > Because esy needs more information about the project, it also extends package.json with new fields : https://esy.sh/docs/en/configuration.html
 
-You notice that some dependencies are prefixed by a namespace : `@opam`, `@pesy`. It tell esy which repository must be use to get the package.
+You notice that some dependencies are prefixed by a namespace : `@opam`. It tell esy which repository must be use to get the package.
 
 At this step we can already do first install:
 
 ```
-esy install
+esy
 ```
 
-From now you have 3 new folders :
+From now you have 3 new folders:
 
 - \_esy : contains all working and build files for esy. We neither want to commit it nor analyzed it with Dune
 - node_modules : contains all sanboxed packages used by ours. We neither want to commit it nor analyzed it with Dune
@@ -121,55 +125,51 @@ esy add -D @opam/ocaml-lsp-server
 
 If you're familiar with `yarn` you noticed that `esy` mimic its commands.
 
-### Dune management with pesy
+### Dune
 
-While Dune is an extremly powerfull build system, it may be boring to manage all the `dune` files. What if we could describe all of them in a single manifest ? That's the purpose of [pesy](https://github.com/esy/pesy)
+While Dune is an extremly powerfull build system, it may change your habits to manage a `dune` files per directory, using sexp.
 
-Edit the `package.json` file to add a `buildDirs` section:
-
-```json
-{
-  "name": "dnd-kata",
-  "version": "0.0.1",
-  "description": "New OCaml project",
-  "license": "MPL-2.0",
-  "scripts": { "start": "esy x dnd" },
-  "dependencies": {
-    "ocaml": "~4.10",
-    "@pesy/esy-pesy": "0.1.0-alpha.11",
-    "@opam/dune": "2.7.1"
-  },
-  "devDependencies": { "@opam/ocaml-lsp-server": "1.1.0" },
-  "esy": {
-    "build": "dune build -p #{self.name}",
-    "buildDev": "pesy build",
-    "release": { "releasedBinaries": ["dnd"] }
-  },
-  "buildDirs": {
-    "lib": { "namespace": "DnD", "name": "dnd-kata.lib", "require": [] },
-    "bin": {
-      "name": "dnd",
-      "require": ["dnd-kata.lib"]
-    }
-  }
-}
-```
-
-Each dune package is either a librairy or a binary. Here we declare:
-
-- a folder `lib` that contains a root module named `DnD` and that is a library named `dnd-kata.lib`
-
-> The extension is optional, use `.lib` for business libs and `.test` for testing libs but it's just a convention.
-
-- a folder `bin` that contain an executable named `dnd` whith an entry point `dnd_app.ml`
-
-You may understand the relation between this config and dune config by [reading the doc](https://github.com/esy/pesy#supported-dune-config)
-
-We can now generate all folders and configuration by running:
-
+Our project will contains a binary and a library, so create thier folders:
 ```sh
-esy pesy
+mkdir bin && mkdir lib
 ```
+
+As subfolders of our package, each need its own dune manifest:
+```sh
+touch lib/dune && touch bin/dune
+```
+
+Each dune package is either a librairy or an executable. 
+
+Start by editing `lib/dune` file which describe a [library](https://dune.readthedocs.io/en/stable/dune-files.html#library):
+```sexp 
+(library
+ (name DnD)
+ (public_name dnd-kata.lib)
+ (ocamlc_flags
+  (:standard -warn-error -a+31+8)))
+```
+
+- `name` stanza contains the name of the root module of our library. If there is a module of this name (`DnD`), only this module will be exposed, otherwise the library expose a module of this name that contains all modules of the folder.
+- `public_name` stanza contains the name under which the library can be referred to as a dependency.
+
+> The extension is optional, I usually use no extension for lib that aims to be published on opam or use `.lib` for business libs and `.test` for testing libs but it's just a convention.
+
+- `ocamlc_flags` stanza contains OCaml compilation flags passed to [ocamlc](https://www.mankier.com/1/ocamlc#-warn-error). Default is `-a+31`, we want to add `Partial match: missing cases in pattern-matching` as an error rather than a warning: Its is warning code is **8** so we passed the flag `-a+31+8`.
+
+Continue by editing `bin/dune` file which describe an [executable](https://dune.readthedocs.io/en/stable/dune-files.html#executable)
+```sexp 
+(executable
+ (name dnd_app)
+ (public_name dnd)
+ (libraries dnd-kata.lib)
+ (ocamlc_flags
+  (:standard -warn-error -a+31+8)))
+```
+
+- `name` stanza contains the name of the root module of our executable.
+- `public_name` stanza contains the name under which the executable can be run
+- `libraries` stanza contains dependencies. They may come from dependencies we installed with esy or from this dune package. Here we add a dependency to our lib.
 
 We can add an "Welcome to Faerûn" to have a minimal program.
 
@@ -193,16 +193,19 @@ esy start
 
 `esy <SCRIPT_NAME>` run the script defined in the package.json scripts section. So here we defined `esy x dnd` as `start` script.
 
-`esy x <BIN_NAME>` run the binary `<BIN_NAME>` which can either be a binary built by our package (like **dnd**) or a binary coming from a dependency (like **pesy**). Thik it like the `npx` command from npm.
+`esy x <BIN_NAME>` run the binary `<BIN_NAME>` which can either be a binary built by our package (like **dnd**) or a binary coming from a dependency. Thik it like the `npx` command from npm.
 
-> pesy is a new tool still in beta. It lacks documentation, you may encounter some bugs and some dune config are not possible at this moment. It's not really a problem at any time you may install pesy globally `npm i -g @pesy/pesy` and run `pesy eject` to serialize dune file. Then you can manage them by hand.
 
 #### Excercice 1:
 
 We want to use [ocamlformat](https://github.com/ocaml-ppx/ocamlformat) a code formatting tool:
 
-- add a new development dependency : http://opam.ocaml.org/packages/ocamlformat/
-- add a `.ocamlformat` file at the root of the project. You can copy-paste its content from a previous kata.
+- add a new development dependencies : [ocamlformat](http://opam.ocaml.org/packages/ocamlformat/) and [ocamlformat-rpc](https://opam.ocaml.org/packages/ocamlformat-rpc/) 
+    
+> ⚠️ ocamlformat et ocamlformat-rpc come from opam
+- add a `.ocamlformat` file at the root of the project. **You can copy-paste its content from a previous kata.**
+
+- run `esy install`, then `esy build` and reopen your IDE.
 
 Congratulation you have setup your first project by yourself, we are ready to explore Faerûn
 
